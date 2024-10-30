@@ -1,78 +1,93 @@
 "use client";
-import Image from "next/image";
-import { useState } from "react";
 
-export default function Home() {
-  // - implementation
-  // x pick an API
-  // - build button component that has a fetch & clear action
-  // - Build a component that displays data (should have an empty and fullfilled state)
-  // - Build function that will fetch data
-  // - format & handle the data
-  // - (error handling)
-  // - style app and create breakpoints
-  // - component for button to sit in
+import React, { useEffect, useState } from "react";
 
-  const [pictureContents, setPictureContents] = useState(null);
-  const [loading, setLoading] = useState(false);
+const Page = () => {
+  const apiUrl = "https://api.waifu.im/search"; // Replace with the actual API endpoint URL
+  const params = {
+    included_tags: ["oppai", "uniform", "milf"],
+    height: ">=0",
+  };
 
-  async function fetchPictures() {
-    setLoading(true);
-    const API_URL =
-      "https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY&count=5";
-    const response = await fetch(API_URL);
-    const testVar = "hello"; // this is unused variable, delete please for midterm
-    const data = await response.json();
-    setPictureContents(data);
-    // console.log(data); use console.log() here or debugger to check output
-    // delete debugger and console when done checking
-    setLoading(false);
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams();
+
+    for (const key in params) {
+      if (Array.isArray(params[key])) {
+        params[key].forEach((value) => {
+          queryParams.append(key, value);
+        });
+      } else {
+        queryParams.set(key, params[key]);
+      }
+    }
+
+    const requestUrl = `${apiUrl}?${queryParams.toString()}`;
+
+    fetch(requestUrl)
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error(
+            "Request failed with status code: " + response.status
+          );
+        }
+      })
+      .then((data) => {
+        setData(data); // Store the response data in state
+        setLoading(false); // Set loading to false
+      })
+      .catch((error) => {
+        setError(error.message); // Store the error message in state
+        setLoading(false); // Set loading to false
+      });
+  }, []); // Empty dependency array to run once on mount
+
+  if (loading) {
+    return <div>Loading...</div>; // Loading state
   }
 
-  const Header = () => {
-    return (
-      <header>
-        <h1>my cool midterm</h1>
-        <button
-          disabled={loading}
-          className="border-2 border-red-600 shadow shadow-amber-600 p-2"
-          onClick={fetchPictures}
-        >
-          Fetch🌝🌚
-        </button>
-      </header>
-    );
-  };
-
-  const PictureDisplay = () => {
-    if (loading) {
-      return <section>Loading...🚀</section>;
-    }
-
-    if (pictureContents) {
-      const pictureList = [];
-
-      pictureContents.forEach((picture, i) => {
-        // keys are explanation, title, url
-        pictureList.push(
-          <article key={i}>
-            <img src={picture.url} alt={picture.explanation} />
-            <h2>{picture.title}</h2>
-            <p>{picture.explanation}</p>
-            <hr />
-          </article>
-        );
-      });
-      return <section>{pictureList}</section>;
-    }
-
-    return <section>No pictures have been fetched 🔭 </section>;
-  };
+  if (error) {
+    return <div>Error: {error}</div>; // Error state
+  }
 
   return (
-    <div className="m-8">
-      <Header />
-      <PictureDisplay />
+    <div>
+      <h1>Waifu Search Results</h1>
+      {data.images && data.images.length > 0 ? (
+        data.images.slice(0, 5).map(
+          (
+            image // Display only the first 5 images
+          ) => (
+            <div key={image.image_id}>
+              <h2>Image ID: {image.image_id}</h2>
+              <img src={image.url} alt={`Image ${image.image_id}`} />
+              <p>Uploaded At: {new Date(image.uploaded_at).toLocaleString()}</p>
+              <p>Favorites: {image.favorites}</p>
+              <p>
+                Source:{" "}
+                <a
+                  href={image.source}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {image.source}
+                </a>
+              </p>
+              <p>Tags:</p>
+            </div>
+          )
+        )
+      ) : (
+        <p>No images found.</p>
+      )}
     </div>
   );
-}
+};
+
+export default Page;
