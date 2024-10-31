@@ -1,33 +1,31 @@
 "use client";
-import Image from "next/image";
 import { useState } from "react";
 
 export default function Home() {
-  // - implementation
-  // x pick an API
-  // - build button component that has a fetch & clear action
-  // - Build a component that displays data (should have an empty and fullfilled state)
-  // - Build function that will fetch data
-  // - format & handle the data
-  // - (error handling)
-  // - style app and create breakpoints
-  // - component for button to sit in
-
-  const [pictureContents, setPictureContents] = useState(null);
+  const [pictureContents, setPictureContents] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  // Function to fetch pictures from the Neko API
   async function fetchPictures() {
     setLoading(true);
-    const API_URL =
-      "https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY&count=5";
-    const response = await fetch(API_URL);
-    const testVar = "hello"; // this is unused variable, delete please for midterm
-    const data = await response.json();
-    setPictureContents(data);
-    // console.log(data); use console.log() here or debugger to check output
-    // delete debugger and console when done checking
+    const response = await fetch("https://nekos.best/api/v2/neko");
+
+    if (!response.ok) {
+      console.error("Error fetching data:", response.statusText);
+      setLoading(false);
+      return; // Exit if there's an error
+    }
+
+    const json = await response.json();
+
+    // Update picture contents with the fetched data
+    setPictureContents(json.results);
     setLoading(false);
   }
+
+  const clearPictures = () => {
+    setPictureContents([]);
+  };
 
   const Header = () => {
     return (
@@ -49,30 +47,37 @@ export default function Home() {
       return <section>Loading...🚀</section>;
     }
 
-    if (pictureContents) {
-      const pictureList = [];
+    if (pictureContents.length > 0) {
+      const pictureList = pictureContents.map((picture, i) => (
+        <article key={i} className="flex flex-col items-center w-full">
+          <img
+            className="w-64 h-64 object-cover"
+            src={picture.url}
+            alt={`picture ${picture.anime_name}`}
+          />
+          <h2 className="text-2xl font-semibold">Site:{picture.source_url}</h2>
+          <p>Artist: {picture.artist_name}</p>
+          <p>Artist Link: {picture.artist_href}</p>
+          <hr />
+        </article>
+      ));
 
-      pictureContents.forEach((picture, i) => {
-        // keys are explanation, title, url
-        pictureList.push(
-          <article key={i}>
-            <img src={picture.url} alt={picture.explanation} />
-            <h2>{picture.title}</h2>
-            <p>{picture.explanation}</p>
-            <hr />
-          </article>
-        );
-      });
       return <section>{pictureList}</section>;
     }
 
-    return <section>No pictures have been fetched 🔭 </section>;
+    return <section>No pictures have been fetched 🔭</section>;
   };
 
   return (
-    <div className="m-8">
+    <div className="m-8 flex flex-col items-center">
       <Header />
       <PictureDisplay />
+      <button
+        className="mt-4 border-2 border-red-600 shadow shadow-amber-600 p-2"
+        onClick={clearPictures}
+      >
+        Clear Pictures ❌
+      </button>
     </div>
   );
 }
