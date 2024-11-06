@@ -1,0 +1,139 @@
+/* Container to center everything on the screen */
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  flex-direction: column;
+  padding: 20px;
+  text-align: center;
+}
+
+/* Flex container for the image and text sections */
+.flexContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+/* Styling for the header */
+.header {
+  font-size: 3rem;
+  margin-bottom: 0;
+}
+
+/* Button styling */
+.button {
+  border: 2px solid #e53e3e;
+  padding: 12px;
+  margin-top: 5px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(255, 140, 0, 0.7);
+}
+
+/* No Nekos message styling */
+.noNekos {
+  margin-top: 10px;
+  font-size: 1.25rem;
+  font-weight: 500;
+  width: 100%;
+  color: #e53e3e;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Container for the image */
+.imageContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: 300px;
+  height: 200px;
+}
+
+/* Image styling */
+.nekoImage {
+  max-width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Loading text inside the image container */
+.loadingText {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #e53e3e;
+  font-size: 1.25rem;
+  font-weight: 500;
+  text-align: center;
+  visibility: hidden;
+}
+
+/* Container for the header, image, and button */
+.headerWrapper {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  justify-content: flex-start;
+  margin-bottom: 20px;
+}
+
+.anotherContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Container for the text (header, button, and no nekos) */
+.textContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  /* Center horizontally */
+  gap: 10px;
+  /* Space between text and button */
+  flex: 1;
+  height: 100%;
+  text-align: center;
+  /* Ensure text is centered */
+}
+
+/* Container for the loaded images */
+.loadedImagesContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Breakpoint for iPhone 14 Pro Max and similar screen sizes */
+@media (max-width: 430px) {
+  .flexContainer {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .imageContainer {
+    margin-bottom: 20px;
+    width: 100%;
+    height: auto;
+  }
+
+  .nekoImage {
+    width: 200%;
+    height: auto;
+  }
+
+  .noNekos {
+    text-align: center;
+    margin-top: 10px;
+  }
+}

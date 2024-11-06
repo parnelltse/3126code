@@ -1,83 +1,79 @@
 "use client";
 import { useState } from "react";
+import Header from "@/components/molecules/Header";
+import PictureDisplay from "@/components/molecules/PictureDisplay";
+import Image from "next/image";
+import styles from "@/app/header.module.css";
 
+// Main Home component
 export default function Home() {
+  // State to hold fetched pictures
   const [pictureContents, setPictureContents] = useState([]);
+  // State to manage loading status
   const [loading, setLoading] = useState(false);
 
-  // Function to fetch pictures from the Neko API
+  // Function to fetch pictures from API
   async function fetchPictures() {
-    setLoading(true);
-    const response = await fetch("https://nekos.best/api/v2/neko");
+    setLoading(true); // Start loading
 
-    if (!response.ok) {
-      console.error("Error fetching data:", response.statusText);
-      setLoading(false);
-      return; // Exit if there's an error
+    try {
+      const response = await fetch("https://nekos.best/api/v2/neko?amount=5");
+
+      // Check if the response is not successful
+      if (!response.ok) {
+        console.error("Error fetching data");
+        setLoading(false); // Stop loading if there’s an error
+        return;
+      }
+
+      const json = await response.json(); // Parse JSON data
+      setPictureContents(json.results); // Update state with fetched pictures
+      setLoading(false); // Stop loading after successful fetch
+    } catch (error) {
+      console.error("Fetch error:", error);
+      setLoading(false); // Stop loading if there’s an error
     }
-
-    const json = await response.json();
-
-    // Update picture contents with the fetched data
-    setPictureContents(json.results);
-    setLoading(false);
   }
 
-  const clearPictures = () => {
+  // Function to clear the picture contents
+  const removePicture = () => {
     setPictureContents([]);
   };
 
-  const Header = () => {
-    return (
-      <header>
-        <h1>my cool midterm</h1>
-        <button
-          disabled={loading}
-          className="border-2 border-red-600 shadow shadow-amber-600 p-2"
-          onClick={fetchPictures}
-        >
-          Fetch🌝🌚
-        </button>
-      </header>
-    );
-  };
-
-  const PictureDisplay = () => {
-    if (loading) {
-      return <section>Loading...🚀</section>;
-    }
-
-    if (pictureContents.length > 0) {
-      const pictureList = pictureContents.map((picture, i) => (
-        <article key={i} className="flex flex-col items-center w-full">
-          <img
-            className="w-64 h-64 object-cover"
-            src={picture.url}
-            alt={`picture ${picture.anime_name}`}
-          />
-          <h2 className="text-2xl font-semibold">Site:{picture.source_url}</h2>
-          <p>Artist: {picture.artist_name}</p>
-          <p>Artist Link: {picture.artist_href}</p>
-          <hr />
-        </article>
-      ));
-
-      return <section>{pictureList}</section>;
-    }
-
-    return <section>No pictures have been fetched 🔭</section>;
-  };
-
   return (
-    <div className="m-8 flex flex-col items-center">
-      <Header />
-      <PictureDisplay />
-      <button
-        className="mt-4 border-2 border-red-600 shadow shadow-amber-600 p-2"
-        onClick={clearPictures}
-      >
-        Clear Pictures ❌
-      </button>
+    <div className={styles.container}>
+      <div className={styles.flexContainer}>
+        {/* Image section displaying a static Neko image */}
+
+        {/* Text container for header and picture display */}
+        <div className={styles.textContainer}>
+          <div className={styles.headerContainer}>
+            {/* Header component with props for fetch, remove, and picture display status */}
+            <Header
+              className={styles.header}
+              heading="Nekos!?!?!?!"
+              onFetchPicture={fetchPictures} // Fetches pictures on button click
+              onRemovePicture={removePicture} // Removes pictures on button click
+              picturesDisplayed={pictureContents.length > 0} // Boolean for pictures present
+            />
+          </div>
+
+          {/* Conditional rendering based on loading and picture contents */}
+          {loading ? (
+            <div className={styles.loading}>Loading Nekos...</div>
+          ) : pictureContents.length > 0 ? (
+            <div className={styles.pictureDisplayContainer}>
+              <PictureDisplay
+                loading={loading} // Pass loading state
+                pictureContents={pictureContents} // Pass picture contents
+              />
+            </div>
+          ) : (
+            // Display message if no pictures are available
+            <section className={styles.noNekos}>No Nekos here. 😢</section>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

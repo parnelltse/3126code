@@ -1,0 +1,76 @@
+/* app/picturedisplay.module.css */
+.cardContainer {
+    display: flex;
+    flex-direction: column;
+    /* Stack cards vertically */
+    justify-content: flex-start;
+    /* Align items at the top */
+    align-items: center;
+    /* Center the cards horizontally */
+    height: auto;
+    /* Height adjusts based on content */
+    width: 100%;
+    /* Full width */
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 400px;
+    /* Max width for each card */
+    height: auto;
+    /* Let the height adjust based on the image */
+
+    border-radius: 12px;
+    /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* Soft shadow */
+    overflow: hidden;
+    /* Ensures content doesn't spill out */
+    background-color: rgb(249, 141, 184);
+    margin-bottom: 20px;
+    padding: 15px;
+    box-sizing: border-box;
+    /* Ensure padding is accounted for */
+}
+
+.cardImage {
+    width: 100%;
+    /* Take up the full width of the card */
+    height: 100%;
+    /* Make the image height flexible */
+    object-fit: contain;
+    /* Ensure the whole image is shown without cropping */
+    object-position: center;
+    /* Center the image if there's empty space */
+    margin-bottom: 10px;
+    /* Space between the image and text */
+}
+
+.cardDetails {
+    text-align: center;
+    font-size: 1.25rem;
+    padding-top: 10px;
+    margin-bottom: 10px;
+    /* Ensure space between text and the next element */
+}
+
+.cardSource {
+    color: #f02a2a;
+    /* Red color for source */
+}
+
+.cardArtist {
+    color: #5a67d8;
+    /* Indigo color for artist link */
+}
+
+
+.loadingText {
+    text-align: center;
+    font-size: 1.25rem;
+}
